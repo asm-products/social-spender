@@ -16,7 +16,7 @@
 -->
 
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, minimum-scale=1, maximum-scale=2"> -->
 
     <style>
@@ -35,9 +35,11 @@
     <!-- <script src="lib/jq/jquery.js"></script> -->
     <!-- <script src="lib/af/jq.appframework.js"></script> -->
     <!-- <script src="lib/af/appframework.ui.js"></script> -->
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <!-- <link rel="stylesheet" href="lib/af/icons.css"> -->
     <!-- <link rel="stylesheet" href="lib/af/af.ui.css"> -->
     <link rel="stylesheet" href="css/app.css">
@@ -45,15 +47,43 @@
 
 
 <body>
-    <h1 class="align-center">A Blank Project Template</h1>
-    <p class="align-center">
-        To use this template as a starter app, start with init-app.js and app.js for your JavaScript code.
-        See the README.md file for more details and the comments inside index.html, app.js and init-app.js.
-    </p>
-    <br>
-    <p class="align-center">
-        <input type="button" id="id_btnHello" value="Touch Me">
-    </p>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Social Shopping</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Link</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="jumbotron">
+                <h3>Welcome</h3>
+                <!-- TODO: if !user -->
+                <p>To get started shopping socially, please <a href="#signup">Sign Up</a>.</p>
+                <p>Already have an account? <a href="#login">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
 
     <!-- IMPORTANT: Do not include your weinre script tag as part of your release builds! -->
     <!-- Place your remote debugging (weinre) script URL from the Test tab here, if it does not work below -->
@@ -137,5 +167,6 @@
         do not work, you may have to experiment. The optimum placement can be app-specific, primarily as a
         function of the included JavaScript libraries and your initialization.
     -->
+</div>
 </body>
 </html>
