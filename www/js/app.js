@@ -33,6 +33,20 @@ Storage.prototype.getItem = function(key)
   }
 }
 
+/* shake from http://www.bootply.com/zKLuRYPyXS*/
+jQuery.fn.shake = function(intShakes, intDistance, intDuration) {
+  this.each(function() {
+    $(this).css("position","relative");
+    for (var x=1; x<=intShakes; x++) {
+      $(this).animate({left:(intDistance*-1)}, (((intDuration/intShakes)/4)))
+        .animate({left:intDistance}, ((intDuration/intShakes)/2))
+        .animate({left:0}, (((intDuration/intShakes)/4)));
+    }
+  });
+  return this;
+};
+
+
 //Parse classes
 var Request = Parse.Object.extend('Request');
 
@@ -166,6 +180,34 @@ app.hideSplashScreen = function() {
 
 angular.module('socialshopping', ['ngRoute', 'ui.bootstrap']);
 angular.module('socialshopping')
+  .run(function($rootScope, $route) {
+    //globally necessary function
+    if (localStorage.getItem('user')) {
+      Parse.User.become(localStorage.getItem('user')).then(function(user) {
+        $rootScope.$apply(function(){$rootScope.user = user});
+      }, function(error){
+        console.log(error);
+        localStorage.removeItem('user');
+      })
+    }
+
+
+    $rootScope.closereq = function(req) {
+      req.set('status', 'closed');
+      req.save();
+    };
+    $rootScope.cancelreq = function(req) {
+      //alert('Cancel this request');
+      //TODO: follow up
+    };
+    $rootScope.flagreq = function(req) {
+      alert('Reporting this incident');
+      //TODO: follow up
+    };
+    $rootScope.updatePage = function(){
+      $route.reload();
+    }
+  })
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
       $routeProvider
         .when('/', {
@@ -207,29 +249,6 @@ angular.module('socialshopping')
         localStorage.removeItem('user');
 
       }
-
-      //globally necessary function
-    if (localStorage.getItem('user')) {
-      Parse.User.become(localStorage.getItem('user')).then(function(user) {
-        $scope.$apply(function(){$rootScope.user = user});
-      }, function(error){
-        localStorage.removeItem('user');
-      })
-    }
-
-
-    $rootScope.closereq = function(req) {
-      alert('Close this request');
-      //TODO: follow up
-    };
-    $rootScope.cancelreq = function(req) {
-      alert('Cancel this request');
-      //TODO: follow up
-    };
-    $rootScope.flagreq = function(req) {
-      alert('Reporting this incident');
-      //TODO: follow up
-    };
   }])
   .controller('indexCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
 
@@ -245,7 +264,7 @@ angular.module('socialshopping')
           $scope.$apply(function() { $location.path("/"); });
         },
         error: function(user, error) {
-
+          $('.loginform').shake(2, 7, 400);
         }
       })
     }
@@ -259,6 +278,7 @@ angular.module('socialshopping')
       user.set('username', $scope.form.username);
       user.set('password', $scope.form.password);
       user.set('email', $scope.form.email);
+      user.set('isRunner', true);
       user.signUp(null, {
         success: function(user) {
           $rootScope.user = user;
@@ -290,17 +310,37 @@ angular.module('socialshopping')
           alert('Failed to create new request, with error code: ' + error.message);
         }
       });
+      //TODO add and secure payment platform, set up percentage cut for app
     };
   }])
   .controller('historyCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+    $scope.requests = [];
+    $scope.hidereq = function(req){
+      req.set('hidden', true);
+      req.save();
+    }
+    $scope.showallreq = function () {
+      var newrequests=[];
+      var query = new Parse.Query(Request);
+      query.equalTo('client', $rootScope.user);
+      query.each(function(req) {
+        req.set('hidden', false);
+        req.save();
+        newrequests.push(req);
+        $scope.requests=newrequests;
+        $scope.$apply();
+      });
+    }
     if ($rootScope.user){
       var query = new Parse.Query(Request);
-      //query.equalTo('client', $rootScope.user);
+      query.equalTo('client', $rootScope.user);
+      query.include('runner');
       query.find().then(function(results){
-          $scope.$apply(function () { //TODO check if this is necessary
+          //$scope.$apply(function () { //TODO check if this is necessary
             $scope.requests = results;
+            $scope.$apply();
             console.log(results);
-          })
+          //})
         },function(error){
           alert("Error: " + error.code + " " + error.message);
         }
@@ -308,5 +348,43 @@ angular.module('socialshopping')
     }
   }])
   .controller('runnerCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+    $scope.mineFirst = function(req){
+      if (req.get('runner')){
+        console.log('maybe mine ', req);
+        if (req.get('runner').get('username') == $rootScope.user.username){
+          console.log('mine ', req);
+          return 5
+        }
+      }
+      return 0
+    }
+    $scope.claimreq = function(req) {
+      req.set('runner', $rootScope.user);
+      req.set('status', 'claimed'); //TODO replace status with mock enum
+      req.save();
+    }
+    $scope.markpurchased = function(req){
+      req.set('status', 'purchased');
+      req.save();
+    }
+    $scope.requests = [];
+    if ($rootScope.user){
+      var queryIsOpen = new Parse.Query(Request);
+      queryIsOpen.equalTo('status', 'open');
+      var queryIsMine = new Parse.Query(Request);
+      queryIsMine.equalTo('runner', $rootScope.user);
+      var query = new Parse.Query.or(queryIsMine, queryIsOpen);
+      query.notEqualTo('status', 'closed'); //TODO: replace with front end filtering
+      query.find().then(function(results){
+          //$scope.$apply(function () { //TODO check if this is necessary
+            $scope.requests = results;
+            $scope.$apply();
+            console.log(results);
+          //})
+        },function(error){
+          alert("Error: " + error.code + " " + error.message);
+        }
+      );
+    }
   }])
 ;

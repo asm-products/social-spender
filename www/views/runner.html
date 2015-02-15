@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="col-lg-12">
+		<p ng-if="!user">
+			You are not yet logged in!
+		</p>
+		<p ng-if="!user.get('isRunner')">
+		You are not a runner
+		</p>
+		<div ng-if="user.get('isRunner')">
+			<h2>My Errand History</h2>
+		</div>
+	</div>
+</div>
+<div ng-if="user.get('isRunner')" class="row">
+	<div class="col-lg-12">
+		<table class="table table-striped">
+			<tr>
+				<th>Order</th>
+				<th>Offer</th>
+				<th>Delivery Address</th>
+				<th>Actions</th>
+			</tr>
+			<tr ng-repeat="req in requests | orderBy: mineFirst">
+				<td>{{req.get('order')}}</td>
+				<td>{{req.get('offer')}}</td>
+				<td>{{req.get('address')}}</td>
+				<td>
+					<button ng-if="req.get('status')=='open'" ng-click="claimreq(req)" class="btn btn-success">Claim</button>
+					<button ng-if="req.get('status')=='claimed'" ng-click="markpurchased(req)" class="btn btn-success">Purchased</button>
+					<button class="btn btn-danger" ng-click="flagreq(req)">Flag</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
