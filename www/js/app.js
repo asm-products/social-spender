@@ -33,6 +33,9 @@ Storage.prototype.getItem = function(key)
   }
 }
 
+//Parse classes
+var Request = Parse.Object.extend('Request');
+
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, intel:false, app:false, dev:false */
 /*global myEventHandler:false, cordova:false, device:false */
@@ -187,7 +190,7 @@ angular.module('socialshopping')
         })
         .when('/history', {
           templateUrl: 'views/history.html',
-          controller: 'historyCtrl'
+          controller: 'requestCtrl'
         })
         .otherwise({
             redirectTo: '/'
@@ -216,9 +219,6 @@ angular.module('socialshopping')
     }
   }])
   .controller('indexCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
-
-  }])
-  .controller('historyCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
 
   }])
   .controller('loginCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location){
@@ -258,9 +258,51 @@ angular.module('socialshopping')
     }
   }])
   .controller('requestCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
-
+    $scope.form = {};
+    $scope.makeRequest = function() {
+      var request = new Request();
+      request.set('offer', $scope.form.offer);
+      request.set('order', $scope.form.order);
+      request.set('address', $scope.form.address);
+      request.set('client', $rootScope.user);
+      request.save(null, {
+        success: function(request) {
+          $scope.$apply(function() {
+            $scope.request = request;
+            console.log(request);
+          });
+        },
+        error: function(request, error) {
+          alert('Failed to create new request, with error code: ' + error.message);
+        }
+      });
+    };
+    $scope.closereq = function(req) {
+      alert('Close this request');
+      //TODO: follow up
+    };
+    $scope.cancelreq = function(req) {
+      alert('Cancel this request');
+      //TODO: follow up
+    };
+    $scope.flagreq = function(req) {
+      alert('Reporting this incident');
+      //TODO: follow up
+    };
+    if ($rootScope.user){
+      var query = new Parse.Query(Request);
+      //query.equalTo('client', $rootScope.user);
+      query.find().then(function(results){
+          $scope.$apply(function () { //TODO check if this is necessary
+            $scope.requests = results;
+            console.log(results);
+          })
+        },function(error){
+          alert("Error: " + error.code + " " + error.message);
+        }
+      );
+    }
   }])
   .controller('runnerCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
-
   }])
 ;

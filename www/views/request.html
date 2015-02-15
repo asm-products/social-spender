@@ -39,9 +39,10 @@
 					{{request.get('runner').get('username')}} will be delivering your goods today.
 				</span>
 				<span ng-if="request.get('status') == 'purchased'">
+					<!-- open -> claimed -> purchased -> closed -->
 					{{request.get('runner').get('username')}} has purchased your goods.
-					<button type="button" class="btn btn-success">I have received my goods</button>
-					<button type="button" class="btn btn-danger">Flag runner for review</button>
+					<button type="button" ng-click="closereq(request)" class="btn btn-success">I have received my goods</button>
+					<button type="button" ng-click="flagreq(request)" class="btn btn-danger">Flag runner for review</button>
 				</span>
 			</div>
 		</div>
