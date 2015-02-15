@@ -185,6 +185,10 @@ angular.module('socialshopping')
           templateUrl: 'views/request.html',
           controller: 'requestCtrl'
         })
+        .when('/history', {
+          templateUrl: 'views/history.html',
+          controller: 'historyCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         })
@@ -200,8 +204,8 @@ angular.module('socialshopping')
         localStorage.removeItem('user');
 
       }
-  }])
-  .controller('indexCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+
+      //globally necessary function
     if (localStorage.getItem('user')) {
       Parse.User.become(localStorage.getItem('user')).then(function(user) {
         $scope.$apply(function(){$rootScope.user = user});
@@ -210,6 +214,12 @@ angular.module('socialshopping')
       })
 
     }
+  }])
+  .controller('indexCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+
+  }])
+  .controller('historyCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+
   }])
   .controller('loginCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location){
     $scope.form = {};
