@@ -37,17 +37,22 @@
     <!-- <script src="lib/af/appframework.ui.js"></script> -->
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="//www.parsecdn.com/js/parse-1.3.4.min.js"></script>
     <!-- <link rel="stylesheet" href="lib/af/icons.css"> -->
     <!-- <link rel="stylesheet" href="lib/af/af.ui.css"> -->
     <link rel="stylesheet" href="css/app.css">
+    <script>
+        Parse.initialize("wCUckmRVU8DWl9uMh0Gh8kQ4fD4mVvhO0NBzmqHS", "cAcMceskLdQVbHG3KwBf3Zo3ohxT0PjB1OBvoOTx");
+    </script>
 </head>
 
 
-<body>
-<nav class="navbar navbar-default">
+<body ng-app="socialshopping">
+<nav class="navbar navbar-default" ng-controller="navCtrl">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -57,31 +62,24 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Social Shopping</a>
+            <a class="navbar-brand" href="#/">Social Shopping</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
+                <li ng-class="isActive('/')"><a href="#">Profile</a></li>
+                <li ng-class="isActive('errand')"><a href="#">Request an Errand</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Link</a></li>
+                <li><a href="#">Run an Errand</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="jumbotron">
-                <h3>Welcome</h3>
-                <!-- TODO: if !user -->
-                <p>To get started shopping socially, please <a href="#signup">Sign Up</a>.</p>
-                <p>Already have an account? <a href="#login">Sign In</a></p>
-            </div>
-        </div>
+<div class="container">
+    <div ng-view class="mainView">
+
     </div>
 
 
@@ -96,7 +94,6 @@
     <script src="xhr.js"></script>              <!-- phantom library, needed for XDK CORS -->
 
     <script src="js/app.js"></script>           <!-- for your event code, see README and file comments for details -->
-    <script src="js/init-app.js"></script>      <!-- for your init code, see README and file comments for details -->
 
     <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
 
