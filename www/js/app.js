@@ -190,7 +190,7 @@ angular.module('socialshopping')
         })
         .when('/history', {
           templateUrl: 'views/history.html',
-          controller: 'requestCtrl'
+          controller: 'historyCtrl'
         })
         .otherwise({
             redirectTo: '/'
@@ -215,8 +215,21 @@ angular.module('socialshopping')
       }, function(error){
         localStorage.removeItem('user');
       })
-
     }
+
+
+    $rootScope.closereq = function(req) {
+      alert('Close this request');
+      //TODO: follow up
+    };
+    $rootScope.cancelreq = function(req) {
+      alert('Cancel this request');
+      //TODO: follow up
+    };
+    $rootScope.flagreq = function(req) {
+      alert('Reporting this incident');
+      //TODO: follow up
+    };
   }])
   .controller('indexCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
 
@@ -265,6 +278,7 @@ angular.module('socialshopping')
       request.set('order', $scope.form.order);
       request.set('address', $scope.form.address);
       request.set('client', $rootScope.user);
+      request.set('status', 'open');
       request.save(null, {
         success: function(request) {
           $scope.$apply(function() {
@@ -277,18 +291,8 @@ angular.module('socialshopping')
         }
       });
     };
-    $scope.closereq = function(req) {
-      alert('Close this request');
-      //TODO: follow up
-    };
-    $scope.cancelreq = function(req) {
-      alert('Cancel this request');
-      //TODO: follow up
-    };
-    $scope.flagreq = function(req) {
-      alert('Reporting this incident');
-      //TODO: follow up
-    };
+  }])
+  .controller('historyCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
     if ($rootScope.user){
       var query = new Parse.Query(Request);
       //query.equalTo('client', $rootScope.user);
