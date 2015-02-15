@@ -1,0 +1,53 @@
+<div class="row" ng-if="!user">
+	<div class="col-lg-12">
+		<p>
+			You are not yet logged in!
+		</p>
+	</div>
+</div>
+<div ng-if="user">
+	<div class="row">
+		<div class="col-xs-4"><h4>Offer</h4></div>
+		<div class="col-xs-8"><p>${{req.get('offer')}}</p></div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-xs-4"><h4>Order</h4></div>
+		<div class="col-xs-8"><p>{{req.get('order')}}</p></div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-xs-4"><h4>Location</h4></div>
+		<div class="col-xs-8"><p>{{req.get('address')}}</p></div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-xs-4"><h4>Status</h4></div>
+		<div class="col-xs-8"><p>{{req.get('status')}}</p></div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-xs-4"><h4>Client</h4></div>
+		<div class="col-xs-8"><p>{{req.get('client').get('username')}}</p></div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-xs-4"><h4>Runner</h4></div>
+		<div class="col-xs-8"><p>{{req.get('runner').get('username')}}</p></div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="btn-group btn-block dropup">
+				<button class="btn btn-lg btn-primary">Client action</button>
+				<button type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="" ng-click="flagreq(req)">Flag</a></li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
+</div>

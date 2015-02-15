@@ -6,29 +6,65 @@
 		<p ng-if="!user.get('isRunner')">
 		You are not a runner
 		</p>
-		<div ng-if="user.get('isRunner')">
-			<h2>My Errand History</h2>
-		</div>
 	</div>
 </div>
 <div ng-if="user.get('isRunner')" class="row">
 	<div class="col-lg-12">
-		<table class="table table-striped">
+		<p>Click an errand to see more</p>
+
+		<table class="table table-hover table-striped">
 			<tr>
-				<th>Order</th>
-				<th>Offer</th>
-				<th>Delivery Address</th>
-				<th>Actions</th>
+				<th>Claimed Errands</th>
 			</tr>
-			<tr ng-repeat="req in requests | orderBy: mineFirst">
-				<td>{{req.get('order')}}</td>
-				<td>{{req.get('offer')}}</td>
+			<tr ng-repeat="req in requests" ng-click="gotoreq(req, 0)">
+				<td>
+					{{req.get('order')}}
+					<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>
+				</td>
+				<!--<td>{{req.get('offer')}}</td>
 				<td>{{req.get('address')}}</td>
 				<td>
 					<button ng-if="req.get('status')=='open'" ng-click="claimreq(req)" class="btn btn-success">Claim</button>
 					<button ng-if="req.get('status')=='claimed'" ng-click="markpurchased(req)" class="btn btn-success">Purchased</button>
 					<button class="btn btn-danger" ng-click="flagreq(req)">Flag</button>
+				</td>-->
+			</tr>
+			<!-- TODO add filtering -->
+		</table>
+		<table class="table table-hover table-striped">
+			<tr>
+				<th>Available Errands</th>
+			</tr>
+			<tr ng-repeat="req in requests" ng-click="gotoreq(req, 0)">
+				<td>
+					{{req.get('order')}}
+					<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>
 				</td>
+				<!--<td>{{req.get('offer')}}</td>
+				<td>{{req.get('address')}}</td>
+				<td>
+					<button ng-if="req.get('status')=='open'" ng-click="claimreq(req)" class="btn btn-success">Claim</button>
+					<button ng-if="req.get('status')=='claimed'" ng-click="markpurchased(req)" class="btn btn-success">Purchased</button>
+					<button class="btn btn-danger" ng-click="flagreq(req)">Flag</button>
+				</td>-->
+			</tr>
+		</table>
+		<table class="table table-hover table-striped">
+			<tr>
+				<th>Completed Errands</th>
+			</tr>
+			<tr ng-repeat="req in requests" ng-click="gotoreq(req, 0)">
+				<td>
+					{{req.get('order')}}
+					<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>
+				</td>
+				<!--<td>{{req.get('offer')}}</td>
+				<td>{{req.get('address')}}</td>
+				<td>
+					<button ng-if="req.get('status')=='open'" ng-click="claimreq(req)" class="btn btn-success">Claim</button>
+					<button ng-if="req.get('status')=='claimed'" ng-click="markpurchased(req)" class="btn btn-success">Purchased</button>
+					<button class="btn btn-danger" ng-click="flagreq(req)">Flag</button>
+				</td>-->
 			</tr>
 		</table>
 	</div>

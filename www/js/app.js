@@ -180,7 +180,7 @@ app.hideSplashScreen = function() {
 
 angular.module('socialshopping', ['ngRoute', 'ui.bootstrap']);
 angular.module('socialshopping')
-  .run(function($rootScope, $route) {
+  .run(function($rootScope, $route, $location) {
     //globally necessary function
     if (localStorage.getItem('user')) {
       Parse.User.become(localStorage.getItem('user')).then(function(user) {
@@ -197,15 +197,20 @@ angular.module('socialshopping')
       req.save();
     };
     $rootScope.cancelreq = function(req) {
-      //alert('Cancel this request');
+      alert('Cancel this request');
       //TODO: follow up
     };
     $rootScope.flagreq = function(req) {
-      alert('Reporting this incident');
+      alert('Report this incident');
       //TODO: follow up
     };
     $rootScope.updatePage = function(){
       $route.reload();
+    }
+    $rootScope.gotoreq = function(req, isClient){
+      $location.path('/order/'+req.id+'/'+isClient);
+      $location.replace();
+      $rootScope.$apply();
     }
   })
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
@@ -234,9 +239,27 @@ angular.module('socialshopping')
           templateUrl: 'views/history.html',
           controller: 'historyCtrl'
         })
+        .when('/order/:oid/:isClient', {
+          templateUrl: 'views/order.html',
+          controller: 'orderCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         })
+  }])
+  .controller('orderCtrl', ['$scope', '$rootScope', '$location', '$routeParams', function($scope, $rootScope, $location, $routeParams){
+    var q = new Parse.Query(Request);
+    q.include('runner');
+    q.include('client');
+    q.get($routeParams.oid, {
+      success: function(req){
+        $scope.req = req;
+        req.fetch();
+        $scope.$apply();
+      }, error: function(req, error) {
+        alert('error retrieving object');
+      }
+    })
   }])
   .controller('navCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location){
       $scope.isActive = function(page) {
@@ -319,10 +342,27 @@ angular.module('socialshopping')
       req.set('hidden', true);
       req.save();
     }
+    $scope.hideallreq = function () {
+      var newrequests=[];
+      var query = new Parse.Query(Request);
+      query.equalTo('client', $rootScope.user);
+      query.include('runner');
+      query.each(function(req) {
+        if(req.get('status') == 'closed'){
+          req.set('hidden', true);
+          req.save();
+          //TODO test show and hide all with multiple users
+        }
+        newrequests.push(req);
+        $scope.requests=newrequests;
+        $scope.$apply();
+      });
+    }
     $scope.showallreq = function () {
       var newrequests=[];
       var query = new Parse.Query(Request);
       query.equalTo('client', $rootScope.user);
+      query.include('runner');
       query.each(function(req) {
         req.set('hidden', false);
         req.save();
@@ -348,7 +388,7 @@ angular.module('socialshopping')
     }
   }])
   .controller('runnerCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
-    $scope.mineFirst = function(req){
+    /*$scope.mineFirst = function(req){
       if (req.get('runner')){
         console.log('maybe mine ', req);
         if (req.get('runner').get('username') == $rootScope.user.username){
@@ -357,7 +397,7 @@ angular.module('socialshopping')
         }
       }
       return 0
-    }
+    }*/
     $scope.claimreq = function(req) {
       req.set('runner', $rootScope.user);
       req.set('status', 'claimed'); //TODO replace status with mock enum

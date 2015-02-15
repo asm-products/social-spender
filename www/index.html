@@ -71,13 +71,13 @@
             <ul class="nav navbar-nav">
                 <li ng-class="isActive('/')"><a href="#">Profile</a></li>
                 <li ng-class="isActive('request')"><a href="#/request">Request an Errand</a></li>
-                <li ng-class="isActive('history')"><a href="#/history">My Errand History</a></li>
+                <li ng-class="isActive('history')"><a href="#/history">My Request History</a></li>
                 <li><form class="navbar-form">
                     <button class="btn btn-link" ng-click="updatePage()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
                 </form></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-if="user.get('isRunner')" ng-class="isActive('runner')"><a href="#/runner">Run an Errand</a></li>
+                <li ng-if="user.get('isRunner')" ng-class="isActive('runner')"><a href="#/runner">My Service History</a></li>
                 <li ng-if="user">
                     <form class="navbar-form"><button style="margin-left: 10px;" ng-click="logout()" class="btn btn-default">Log Out</button></form>
                 </li>

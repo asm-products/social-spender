@@ -3,31 +3,46 @@
 		<p ng-if="!user">
 			You are not yet logged in!
 		</p>
-		<div ng-if="user">
-			<h2>My Errand History
-			<button class="pull-right btn btn-warning" ng-click="showallreq()">Show All</button></h2>
-		</div>
 	</div>
 </div>
 <div ng-if="user" class="row">
 	<div class="col-lg-12">
-	<table class="table table-striped">
+		<p>Click an errand to see more</p>
+	<table class="table table-hover table-striped">
 		<tr>
-			<th>Order</th>
-			<th>Date</th>
-			<th>Runner</th>
-			<th>Actions</th>
+			<th>My Active Requests</th>
 		</tr>
 		<tr ng-repeat="req in requests" ng-hide="req.get('hidden')">
-			<td>{{req.get('order')}}</td>
-			<td>{{(req.createdAt).format('{MM}-{dd}-{yyyy}')}}</td>
+			<td ng-click="gotoreq(req, 1)">
+				{{req.get('order')}}
+				<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>
+			</td>
+			<!-- TODO add filtering -->
+			<!--<td>{{(req.createdAt).format('{MM}-{dd}-{yyyy}')}}</td>
 			<td>{{req.get('runner').get('username')}}</td>
 			<td>
 				<button ng-if="req.get('status')=='open'" ng-click="cancelreq(req)" class="btn btn-primary">Cancel</button>
 				<button ng-if="req.get('status')=='purchased'" ng-click="closereq(req)" class="btn btn-success">Mark Received</button>
 				<button class="btn btn-danger" ng-click="flagreq(req)">Flag</button>
-				<button ng-if="req.get('status')=='closed'" class="btn btn-success" ng-click="hidereq(req)">Hide</button>
+			</td>-->
+		</tr>
+	</table>
+	<table class="table table-hover table-striped">
+		<tr>
+			<th>My Request History</th>
+		</tr>
+		<tr ng-repeat="req in requests" ng-hide="req.get('hidden')">
+			<td ng-click="gotoreq(req, 1)">
+				{{req.get('order')}}
+				<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>
 			</td>
+			<!--<td>{{(req.createdAt).format('{MM}-{dd}-{yyyy}')}}</td>
+			<td>{{req.get('runner').get('username')}}</td>
+			<td>
+				<button ng-if="req.get('status')=='open'" ng-click="cancelreq(req)" class="btn btn-primary">Cancel</button>
+				<button ng-if="req.get('status')=='purchased'" ng-click="closereq(req)" class="btn btn-success">Mark Received</button>
+				<button class="btn btn-danger" ng-click="flagreq(req)">Flag</button>
+			</td>-->
 		</tr>
 	</table>
 	</div>
