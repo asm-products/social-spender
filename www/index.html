@@ -69,10 +69,12 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li ng-class="isActive('/')"><a href="#">Profile</a></li>
-                <li ng-class="isActive('errand')"><a href="#">Request an Errand</a></li>
+                <li ng-class="isActive('request')"><a href="#/request">Request an Errand</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Run an Errand</a></li>
+                <li ng-class="isActive('runner')"><a href="#/runner">Run an Errand</a></li>
+                <li ng-if="user">
+                    <form class="navbar-form"><button ng-click="logout()" class="btn btn-default">Log Out</button></form></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

@@ -2,6 +2,36 @@
  * Please see the included README.md file for license terms and conditions.
  */
 
+/* json_storage.js
+ * @danott
+ * 26 APR 2011
+ *
+ * Building on a thread from Stack Overflow, override localStorage and sessionStorage's
+ * getter and setter functions to allow for storing objects and arrays.
+ *
+ * Original thread:
+ * http://stackoverflow.com/questions/2010892/storing-objects-in-html5-localstorage
+ *
+ * Modified by emanb29 to include actual getters and setters
+ */
+Storage.prototype._setItem = Storage.prototype.setItem;
+Storage.prototype.setItem = function(key, value)
+{
+  this._setItem(key, JSON.stringify(value));
+}
+
+Storage.prototype._getItem = Storage.prototype.getItem;
+Storage.prototype.getItem = function(key)
+{
+  try
+  {
+    return JSON.parse(this._getItem(key));
+  }
+  catch(e)
+  {
+    return this._getItem(key);
+  }
+}
 
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, intel:false, app:false, dev:false */
@@ -147,6 +177,14 @@ angular.module('socialshopping')
             templateUrl: 'views/register.html',
             controller: 'registerCtrl'
         })
+        .when('/runner', {
+          templateUrl: 'views/runner.html',
+          controller: 'runnerCtrl'
+        })
+        .when('/request', {
+          templateUrl: 'views/request.html',
+          controller: 'requestCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         })
@@ -157,12 +195,37 @@ angular.module('socialshopping')
           //console.log('current: ', current, ' page: ', page, ' location: ', $location.path());
           return (page === current || page === $location.path()) ? "active" : "";
       };
+      $scope.logout = function(){
+        delete $rootScope.user;
+        localStorage.removeItem('user');
+
+      }
   }])
   .controller('indexCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+    if (localStorage.getItem('user')) {
+      Parse.User.become(localStorage.getItem('user')).then(function(user) {
+        $scope.$apply(function(){$rootScope.user = user});
+      }, function(error){
+        localStorage.removeItem('user');
+      })
 
+    }
   }])
-  .controller('loginCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+  .controller('loginCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location){
+    $scope.form = {};
+    $scope.login = function() {
+      Parse.User.logIn($scope.form.username, $scope.form.password, {
+        success: function(user) {
+          $rootScope.user = user;
+          localStorage.setItem('user', user.getSessionToken());
+          console.log(user);
+          $scope.$apply(function() { $location.path("/"); });
+        },
+        error: function(user, error) {
 
+        }
+      })
+    }
   }])
   .controller('registerCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location){
 
@@ -175,12 +238,19 @@ angular.module('socialshopping')
       user.set('email', $scope.form.email);
       user.signUp(null, {
         success: function(user) {
-          $rootScope.user = $scope.form;
-          $scope.$apply(function() { $location.path("/route"); });
+          $rootScope.user = user;
+          $scope.$apply(function() { $location.path("/"); });
         },
-        error: function(error) {
+        error: function(user, error) {
           alert("Error: " + error.code + " " + error.message);
         }
       });
     }
-  }]);
+  }])
+  .controller('requestCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+
+  }])
+  .controller('runnerCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+
+  }])
+;
