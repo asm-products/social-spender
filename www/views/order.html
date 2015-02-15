@@ -39,8 +39,30 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="btn-group btn-block dropup">
-				<button ng-if="isClient" class="btn btn-lg btn-primary">Client action</button>
-				<button ng-if="isClient==0" class="btn btn-lg btn-primary">Runner action</button>
+
+				<button ng-click="cancelreq(req)" ng-if="isClient==true
+					&& req.get('status')=='open'" class="btn btn-lg btn-primary">
+				Cancel</button>
+				<button ng-click="closereq(req)" ng-if="isClient==true
+					&& req.get('status')=='purchased'" class="btn btn-lg btn-primary">
+				Mark Delivered</button>
+				<button disabled ng-if="isClient==true
+					&& req.get('status')=='closed'" class="btn btn-lg btn-primary">
+				All Done!</button>
+				<button disabled ng-if="isClient==true
+					&& req.get('status')=='claimed'" class="btn btn-lg btn-primary">
+				Your order is being purchased</button>
+
+				<button ng-click="claimreq(req)" ng-if="isClient!=true
+					&& req.get('status')=='open'" class="btn btn-lg btn-primary">
+				Claim</button>
+				<button ng-click="markpurchased(req)" ng-if="isClient!=true
+					&& req.get('status')=='claimed'" class="btn btn-lg btn-primary">
+				Mark Purchased</button>
+				<button disabled ng-if="isClient!=true
+					&& req.get('status')!='open' && req.get('status')!='claimed'" class="btn btn-lg btn-primary">
+				All Done!</button>
+
 				<button type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 					<span class="caret"></span>
 				</button>

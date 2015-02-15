@@ -192,18 +192,7 @@ angular.module('socialshopping')
     }
 
 
-    $rootScope.closereq = function(req) {
-      req.set('status', 'closed');
-      req.save();
-    };
-    $rootScope.cancelreq = function(req) {
-      alert('Cancel this request');
-      //TODO: follow up
-    };
-    $rootScope.flagreq = function(req) {
-      alert('Report this incident');
-      //TODO: follow up
-    };
+
     $rootScope.updatePage = function(){
       $route.reload();
     }
@@ -248,6 +237,28 @@ angular.module('socialshopping')
         })
   }])
   .controller('orderCtrl', ['$scope', '$rootScope', '$location', '$routeParams', function($scope, $rootScope, $location, $routeParams){
+    $scope.claimreq = function(req) {
+      req.set('runner', $rootScope.user);
+      req.set('status', 'claimed'); //TODO replace status with mock enum
+      req.save();
+    }
+    $scope.markpurchased = function(req){
+      req.set('status', 'purchased');
+      req.save();
+    }
+    $scope.closereq = function(req) {
+      req.set('status', 'closed');
+      req.save();
+    };
+    $scope.cancelreq = function(req) {
+      alert('Cancel this request');
+      //TODO: follow up
+    };
+    $scope.flagreq = function(req) {
+      alert('Report this incident');
+      //TODO: follow up
+    };
+
     var q = new Parse.Query(Request);
     q.include('runner');
     q.include('client');
@@ -340,10 +351,10 @@ angular.module('socialshopping')
   }])
   .controller('historyCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
     $scope.requests = [];
-    $scope.hidereq = function(req){
+    /*$scope.hidereq = function(req){
       req.set('hidden', true);
       req.save();
-    }
+    }*/
     $scope.reqClosed = function(req){
       return (req.get('status')=='closed');
     }
@@ -351,7 +362,7 @@ angular.module('socialshopping')
       console.log(req.get('status'));
       return !$scope.reqClosed(req);
     }
-    $scope.hideallreq = function () {
+    /*$scope.hideallreq = function () {
       var newrequests=[];
       var query = new Parse.Query(Request);
       query.equalTo('client', $rootScope.user);
@@ -379,7 +390,7 @@ angular.module('socialshopping')
         $scope.requests=newrequests;
         $scope.$apply();
       });
-    }
+    }*/
     if ($rootScope.user){
       var query = new Parse.Query(Request);
       query.equalTo('client', $rootScope.user);
@@ -407,23 +418,16 @@ angular.module('socialshopping')
       }
       return 0
     }*/
-    $scope.claimreq = function(req) {
-      req.set('runner', $rootScope.user);
-      req.set('status', 'claimed'); //TODO replace status with mock enum
-      req.save();
-    }
-    $scope.markpurchased = function(req){
-      req.set('status', 'purchased');
-      req.save();
-    }
     $scope.open = function(req){
       return req.get('status') == 'open';
     }
     $scope.claimed = function(req){
-      return (req.get('status') != 'closed' && req.get('runner') == $rootScope.user);
+      return (req.get('status') != 'closed' && req.get('runner').id == $rootScope.user.id);
     }
     $scope.complete = function(req){
-      return (req.get('status') == 'closed' && req.get('runner') == $rootScope.user);
+      console.log(req.get('status') == 'closed');
+
+      return (req.get('status') == 'closed' && req.get('runner').id == $rootScope.user.id);
     }
     $scope.requests = [];
     if ($rootScope.user){
@@ -432,7 +436,7 @@ angular.module('socialshopping')
       var queryIsMine = new Parse.Query(Request);
       queryIsMine.equalTo('runner', $rootScope.user);
       var query = new Parse.Query.or(queryIsMine, queryIsOpen);
-      query.notEqualTo('status', 'closed'); //TODO: replace with front end filtering
+      query.include('runner');
       query.find().then(function(results){
           //$scope.$apply(function () { //TODO check if this is necessary
             $scope.requests = results;
