@@ -260,6 +260,8 @@ angular.module('socialshopping')
         alert('error retrieving object');
       }
     })
+    $scope.isClient = $routeParams.isClient;
+    console.log($scope.isClient);
   }])
   .controller('navCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location){
       $scope.isActive = function(page) {
@@ -342,6 +344,13 @@ angular.module('socialshopping')
       req.set('hidden', true);
       req.save();
     }
+    $scope.reqClosed = function(req){
+      return (req.get('status')=='closed');
+    }
+    $scope.reqOpen = function(req){
+      console.log(req.get('status'));
+      return !$scope.reqClosed(req);
+    }
     $scope.hideallreq = function () {
       var newrequests=[];
       var query = new Parse.Query(Request);
@@ -406,6 +415,15 @@ angular.module('socialshopping')
     $scope.markpurchased = function(req){
       req.set('status', 'purchased');
       req.save();
+    }
+    $scope.open = function(req){
+      return req.get('status') == 'open';
+    }
+    $scope.claimed = function(req){
+      return (req.get('status') != 'closed' && req.get('runner') == $rootScope.user);
+    }
+    $scope.complete = function(req){
+      return (req.get('status') == 'closed' && req.get('runner') == $rootScope.user);
     }
     $scope.requests = [];
     if ($rootScope.user){

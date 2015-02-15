@@ -12,7 +12,7 @@
 		<tr>
 			<th>My Active Requests</th>
 		</tr>
-		<tr ng-repeat="req in requests" ng-hide="req.get('hidden')">
+		<tr ng-repeat="req in requests | filter: reqOpen" ng-hide="req.get('hidden')">
 			<td ng-click="gotoreq(req, 1)">
 				{{req.get('order')}}
 				<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>
@@ -31,7 +31,7 @@
 		<tr>
 			<th>My Request History</th>
 		</tr>
-		<tr ng-repeat="req in requests" ng-hide="req.get('hidden')">
+		<tr ng-repeat="req in requests | filter: reqClosed" ng-hide="req.get('hidden')">
 			<td ng-click="gotoreq(req, 1)">
 				{{req.get('order')}}
 				<span class="glyphicon glyphicon-circle-arrow-right pull-right"></span>

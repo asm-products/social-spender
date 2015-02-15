@@ -26,12 +26,12 @@
 		<div class="col-xs-8"><p>{{req.get('status')}}</p></div>
 	</div>
 	<hr/>
-	<div class="row">
+
+	<div class="row" ng-if="isClient==0">
 		<div class="col-xs-4"><h4>Client</h4></div>
 		<div class="col-xs-8"><p>{{req.get('client').get('username')}}</p></div>
 	</div>
-	<hr/>
-	<div class="row">
+	<div class="row" ng-if="isClient">
 		<div class="col-xs-4"><h4>Runner</h4></div>
 		<div class="col-xs-8"><p>{{req.get('runner').get('username')}}</p></div>
 	</div>
@@ -39,7 +39,8 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="btn-group btn-block dropup">
-				<button class="btn btn-lg btn-primary">Client action</button>
+				<button ng-if="isClient" class="btn btn-lg btn-primary">Client action</button>
+				<button ng-if="!isClient" class="btn btn-lg btn-primary">Runner action</button>
 				<button type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 					<span class="caret"></span>
 				</button>
